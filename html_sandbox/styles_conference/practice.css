@@ -1,0 +1,54 @@
+p {
+  color: orange;
+  font-size: 39px;
+}
+
+/* ^^^^
+
+- `p` is a type selector because it's selecting all <p> elements
+- Declarations for this are placed inside of curly braces
+- A declaration begins with a property, and is followed by a value.
+                              (color)                     (font-size)
+
+*/
+
+.awesome {
+
+}
+
+/* 
+
+A selector that begins with a period as above with `.awesome` is a class
+selector, and styles all elements belonging to this class.
+- class is an attribute that can be assigned to a bunch of elements.
+- Different elements can have the same class:
+
+<div class="awesome">...</div>
+<p class="awesome">...</div>
+
+ */
+
+#clarkeparker {
+
+}
+
+/*
+
+ID selectors are even more specific than class selectors; they target individual
+elements. written with `#` followed by the id selector value
+
+<div id="clarkeparker">...</div>
+
+
+-> I guess that means that elements can share the same class attribute value,
+   but can't share the same id attribute value??? Yes.
+-> apparently, if used, they should be reserved for significant elements.
+
+*/
+
+/*
+
+There are even more selectors than these!
+These are the common ones, but selectors can get pretty darn powerful.
+
+*/
