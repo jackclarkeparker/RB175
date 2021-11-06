@@ -10,6 +10,7 @@ GEM
     pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
+    webrick (1.7.0)
 
 PLATFORMS
   x86_64-darwin-18
@@ -17,6 +18,7 @@ PLATFORMS
 DEPENDENCIES
   pry (= 0.13.0)
   pry-byebug
+  webrick
 
 BUNDLED WITH
    2.2.15
