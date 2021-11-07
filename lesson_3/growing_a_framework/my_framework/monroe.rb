@@ -1,9 +1,11 @@
+require 'erb'
+
 class Monroe
   def erb(filename, local = {})
     b = binding
     message = local[:message]
-    content = File.new("views/#{filename}.erb")
-    ERB.new(content).result(b)
+    content = File.read("views/#{filename}.erb")
+    response = ERB.new(content).result(b)
   end
 
   def response(status, headers, body = '')
