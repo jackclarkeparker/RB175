@@ -1,6 +1,20 @@
+require_relative 'advice'     # loads advice.rb
+
 class HelloWorld
   def call(env)
-    ['200', {'Content-Type' => 'text/plan'}, ["Hello World!\n"]]
+    case env['REQUEST_PATH']
+    when '/'
+      ['200', {'Content-Type' => 'text/plan'}, ["Hello World!\n"]]
+    when '/advice'
+      piece_of_advice = Advice.new.generate   # random piece of advice
+      ['200', {'Content-Type' => 'text/plan'}, [piece_of_advice + "\n"]]
+    else
+      [
+        '404',
+        {'Content-Type' => 'text/plain', 'Content-Length' => '13'},
+        ['404 Not Found']
+      ]
+    end
   end
 end
 
