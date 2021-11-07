@@ -4,11 +4,12 @@ class HelloWorld
   def call(env)
     case env['REQUEST_PATH']
     when '/'
-      [
-        '200',
-        {'Content-Type' => 'text/html'},
-        ["<html><body><h2>Hello World!</h2></body></html>"]
-      ]
+      template = File.read("views/index.erb")
+      content = ERB.new(template)
+      ['200', {'Content-Type' => 'text/html'}, [content.result]]
+      # I wonder why we use an ERB object here when we could just straight up
+      # use the string from File::read 'ing the .erb file? could be `template`,
+      # or could be `File.read("views/index.erb")` itself
     when '/advice'
       piece_of_advice = Advice.new.generate   # random piece of advice
       [
