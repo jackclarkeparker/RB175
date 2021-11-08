@@ -22,6 +22,9 @@ get "/chapters/1" do
   erb :chapter
 end
 
+get "/platypus" do
+  erb :platypus
+end
 
 
 
