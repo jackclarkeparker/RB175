@@ -8,10 +8,21 @@ require "tilt/erubis"
 
 
 get "/" do
-  @title = "The Adventures of Sherlock Holmes"
-  @contents = File.readlines("data/toc.txt")
+  @files = []
+  Dir.foreach("public") do |file|
+    @files << file if File.file?("public/#{file}")
+  end
 
-  erb :home
+  @files.sort! do |a, b|
+    params["order"] == "descending" ? b <=> a : a <=> b
+  end
+  
+  erb :index
+
+  # @title = "The Adventures of Sherlock Holmes"
+  # @contents = File.readlines("data/toc.txt")
+
+  # erb :home
 end
 
 get "/chapters/1" do
