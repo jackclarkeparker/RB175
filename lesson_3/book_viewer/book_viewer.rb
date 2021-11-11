@@ -5,16 +5,18 @@ require "sinatra/reloader"
 # constantly restart the server to verify changes.
 require "tilt/erubis"
 
+before do
+  @contents = File.readlines("data/toc.txt")
+end
+
 get "/" do  
   @title = "The Adventures of Sherlock Holmes"
-  @contents = File.readlines("data/toc.txt")
 
   erb :home
 end
 
 get "/chapters/1" do
   @title = "Chapter 1"
-  @contents = File.readlines("data/toc.txt")
   @text = File.readlines("data/chp1.txt")
 
   erb :chapter
