@@ -5,40 +5,11 @@ require "sinatra/reloader"
 # constantly restart the server to verify changes.
 require "tilt/erubis"
 
-
-
 get "/" do  
-  # My first try
+  @title = "The Adventures of Sherlock Holmes"
+  @contents = File.readlines("data/toc.txt")
 
-  @files = []
-
-  Dir.foreach("public") do |file|
-    @files << file if File.file?("public/#{file}")
-  end
-
-  @files.sort! do |a, b|
-    params["order"] == "descending" ? b <=> a : a <=> b
-  end
-  
-  # After reading hint about glob
-
-  @files = Dir.glob("*", base: "public").select do |filename|
-    File.file?("public/#{filename}")
-  end.sort! do |a, b|
-    params["order"] == "descending" ? b <=> a : a <=> b
-  end
-
-  # LS solution
-
-  # @files = Dir.glob("public/*").map {|file| File.basename(file) }.sort
-  # @files.reverse! if params[:sort] == "desc"
-  
-  erb :index
-
-  # @title = "The Adventures of Sherlock Holmes"
-  # @contents = File.readlines("data/toc.txt")
-
-  # erb :home
+  erb :home
 end
 
 get "/chapters/1" do
@@ -53,8 +24,6 @@ get "/platypus" do
   erb :platypus
 end
 
-
-
 # Here is a difference between this and a straight up rack application;
 # The rackup command is run with a config.ru file, and then that file is
 # the one that runs the Web application
@@ -66,4 +35,3 @@ end
 # get "/" do
 #   "Hello World!"
 # end
-
