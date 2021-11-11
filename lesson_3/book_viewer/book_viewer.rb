@@ -15,11 +15,16 @@ get "/" do
   erb :home
 end
 
-get "/chapters/1" do
-  @title = "Chapter 1"
-  @text = File.readlines("data/chp1.txt")
+get "/chapters/:number" do
+  @num = params[:number]
+  @title = @contents[@num.to_i - 1]
+  @text = File.readlines("data/chp#{@num}.txt")
 
   erb :chapter
+end
+
+get "/show/:name" do
+  params[:name]
 end
 
 get "/platypus" do
