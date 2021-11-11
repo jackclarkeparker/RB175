@@ -1,16 +1,23 @@
 <%# My version of this view %>
 
+<%
+=begin %>
 <!doctype html>
 <html>
 <body>
+<%
+=end %>
   <% @files.each do |file| %>
     <a href="/<%= file %>"><%= file %></a><br>
   <% end %>
   <lb>
   <pre><a href="?order=ascending">Sort Ascending</a>   <a href="?order=descending">Sort Descending</a></pre>
+<%
+=begin %>
 </body>
 </html>
-
+<%
+=end %>
 <%
 =begin %>
 
