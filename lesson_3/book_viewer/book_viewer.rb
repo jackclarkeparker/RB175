@@ -21,7 +21,7 @@ get "/chapters/1" do
 end
 
 get "/platypus" do
-  erb :platypus
+  erb :platypus, layout: false
 end
 
 # Here is a difference between this and a straight up rack application;
