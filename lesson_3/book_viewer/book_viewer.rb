@@ -26,9 +26,11 @@ get "/" do
 end
 
 get "/chapters/:number" do
-  @num = params[:number]
-  @title = @contents[@num.to_i - 1]
-  @text = File.read("data/chp#{@num}.txt")
+  num = params[:number].to_i
+  @title = @contents[num - 1]
+  @text = File.read("data/chp#{num}.txt")
+
+  redirect "/" unless (1..@contents.size).cover?(num)
 
   erb :chapter
 end
@@ -39,6 +41,10 @@ end
 
 get "/platypus" do
   erb :platypus, layout: false
+end
+
+not_found do
+  redirect "/"
 end
 
 # Here is a difference between this and a straight up rack application;
