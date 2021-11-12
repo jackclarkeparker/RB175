@@ -1,9 +1,3 @@
 <h2 class="content-subhead"><%= @title %></h2>
 
-<% @text.each do |line| %>
-  <% if line == "\n" %>
-    <br><br>
-  <% else %>
-    <%= line %>
-  <% end %>
-<% end %>
+<%= in_paragraphs(@text) %>

@@ -5,6 +5,16 @@ require "sinatra/reloader"
 # constantly restart the server to verify changes.
 require "tilt/erubis"
 
+helpers do
+  def in_paragraphs(text)
+    result = ""
+    text.split("\n\n").each do |para|
+      result << "<p>#{para}</p>"
+    end
+    result
+  end
+end
+
 before do
   @contents = File.readlines("data/toc.txt")
 end
@@ -18,7 +28,7 @@ end
 get "/chapters/:number" do
   @num = params[:number]
   @title = @contents[@num.to_i - 1]
-  @text = File.readlines("data/chp#{@num}.txt")
+  @text = File.read("data/chp#{@num}.txt")
 
   erb :chapter
 end
