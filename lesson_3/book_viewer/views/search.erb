@@ -1,0 +1,37 @@
+<h2 class="content-subhead">Search</h2>
+
+<form action="/search" method="get">
+  <input name="query" value="<%= params[:query] %>">
+  <button type="submit">Search</button>
+</form>
+
+<% if params[:query] %>
+
+  <% if search_matches.empty? %>
+    <p>Sorry, no matches were found.</p>
+  <% else %>
+    <h2 class="content-subhead">Results for '<%= params[:query] %>'</h2>
+    <ul>
+      <% search_matches.each do |num| %>
+        <li><a href="/chapters/<%= num.to_s %>"><%= @contents[num - 1] %></a></li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
+
+<%
+=begin %>
+Input - query
+Output - HTML
+* Either a heading and list of matches for those chapters where the query is matched,
+  or a short description explaining that no matches exist.
+
+- We'll need to iterate through each chapter to select for matches.
+  - How do we access each chapter?
+  A~ With File.read
+    - Should we be doing this with a helper method?
+      - Yes, because this is logic that takes place inside the view template.
+
+
+<%
+=end %>
