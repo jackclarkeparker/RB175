@@ -7,13 +7,19 @@
 
 <% if params[:query] %>
 
-  <% if search_matches.empty? %>
+  <% if @results.empty? %>
     <p>Sorry, no matches were found.</p>
   <% else %>
     <h2 class="content-subhead">Results for '<%= params[:query] %>'</h2>
     <ul>
-      <% search_matches.each do |num| %>
-        <li><a href="/chapters/<%= num.to_s %>"><%= @contents[num - 1] %></a></li>
+      <% @results.each do |match| %>
+        <li><h3 class="content-subhead"><%= match[:name] %></h3>
+          <ul>
+            <% match[:matching_paragraphs].each do |text, id| %>
+              <li><a href="chapters/<%= match[:number] %>#<%= id %>"><%= text %></a></li>
+            <% end %>
+          </ul>  
+        </li>
       <% end %>
     </ul>
   <% end %>
