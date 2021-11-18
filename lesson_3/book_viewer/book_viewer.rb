@@ -11,16 +11,26 @@ require 'pry-byebug'
 helpers do
   def in_paragraphs(text)
     result = ''
+    
     text.split("\n\n").each_with_index do |para, index|
       result << "<p id='#{index + 1}'>#{para}</p>"
     end
-    binding.pry
+
     result
   end
 
-  # def highlight_query_matches(para)
-  #   para
-  # end
+  def highlight_query_matches(text)
+    valid_match = /(?<!<strong>)#{@query}/
+    query_length = @query.length
+    bolded_query = "<strong>#{@query}</strong>"
+    
+    while text.match?(valid_match)
+      text[text.index(valid_match), query_length] = bolded_query
+    end
+
+    text
+    # text.gsub(@query, %(<strong>#{@query}</strong>)) (LS's easy solution<!>)
+  end
 end
 
 def each_chapter
@@ -31,14 +41,14 @@ def each_chapter
   end
 end
 
-def chapters_matching(query)
+def find_matching_chapters
   results = []
 
-  return results if !query || query.empty?
+  return results if !@query || @query.empty?
 
   each_chapter do |name, number, text|
-    if text.include? query
-      matching_paragraphs = find_matching_paragraphs(query, text)
+    if text.include? @query
+      matching_paragraphs = find_matching_paragraphs(text)
       results << {
         name: name,
         number: number,
@@ -50,30 +60,19 @@ def chapters_matching(query)
   results
 end
 
-def find_matching_paragraphs(query, text)
+def find_matching_paragraphs(text)
   matches = []
 
   text.split("\n\n").each_with_index do |paragraph, idx|
-    matches << [paragraph, idx + 1] if paragraph.include?(query)
+    matches << [paragraph, idx + 1] if paragraph.include?(@query)
   end
 
   matches
-
-  # matches = text.split("/n/n").select do |para|
-  #   para.include?(query)
-  # end
-
-  # matches.map do |para|
-  #   prefix_length = "<p id='".length
-  #   id = para[prefix_length...para.index("'", prefix_length)]
-  #   [para, id]
-  # end
 end
 
 =begin
 
 PEDAC for finding_matching_paragraphs
-
 The new feature that we want is to be able to see which paragraphs of a
 matching chapter include the query.
 - We want to turn these paragraphs into anchor elements themselves, that will
@@ -116,7 +115,7 @@ matching chapter include the query.
 PEDAC for highlight_query_matches
 
 Input - String
-* HTML <p> element
+* HTML paragraph element
 Output - String
 * The same value as Input, but with `<strong>` tags enclosing all query matches
 
@@ -125,7 +124,7 @@ Output - String
 - If the query in it's entirety is present, along with extra characters, this
   still counts as a match.
   - The bold tags must only apply to the portion of the string that matches the
-    query; the extra characters must be ignored.
+    query; extra characters that precede or follow must be ignored.
 - Where the query is present more than once, shall we apply bold tags to all
   matches? Yes
 
@@ -134,8 +133,25 @@ GENERAL APPROACH
 - So I suppose we can find the index of the location of a match, combine this
   with the length of the query, and insert <strong> tags before and after these?
   - How do we ensure we find the index of all matches?
-    - If we scan for matches, we will have an array of all the matches
+    - Loop, searching for matches with a regex that captures the query with a
+      negative look behind ensuring that the query isn't already preceded with
+      a <strong> tag
 
+Input - String(`text`)
+
+1. Initialise `query_length` to the length of the query
+2. Initialise `bolded_query` to a string which is the query enclosed with
+   <strong> tags
+3. While `text` contains a match of query, not preceded by <strong> tag
+   - Assign the characters of text starting at the index of the matching
+     query, and of length `query_length` long to `bolded_query`
+4. Return `text`
+
+Output - String
+
+### POST SOLUTION
+
+Feck, LS just used gsub. OFC!!
 
 PEDAC for initial search method; for finding and listing chapters that match a
 query
@@ -192,11 +208,7 @@ How do we find a match?
    - An unordered list of each of the chapters that are matched
 
 
-
-LOOK TO REFACTOR AFTER FIRST ATTEMPT
-
-Thoughts
-
+THOUGHTS AFTER READING SOLUTION
 My solution just grabbed the chapter numbers, and used these to ascertain the
 name (number - 1 gives index of title from @contents), and path (data/chp<num>.txt)
 for each chapter.
@@ -230,11 +242,11 @@ it's easy to modify in one place when we want to expand the range of data we are
 collecting. Now we want to capture paragraphs that match, we can make this
 another datapoint for the same method.
 
-
 =end
 
 before do
   @contents = File.readlines("data/toc.txt")
+  @query = params[:query]
 end
 
 get "/" do  
@@ -255,7 +267,7 @@ end
 
 get "/search" do
   @title = "Search"
-  @results = chapters_matching(params[:query])
+  @results = find_matching_chapters
 
   erb :search
 end
